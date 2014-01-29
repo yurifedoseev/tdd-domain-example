@@ -21,14 +21,14 @@ namespace Crm
             client = new Client { Name = "ООО Вектор Плюс" };
 
             firstManager = new Manager("Петров", salesDepartment, Position.Manager);
+            firstManager.AddClient(client);
+            
             targetManager = new Manager("Сидоров", salesDepartment, Position.Manager);
         }
 
         [Test]
         public void should_transfer_client_from_one_manager_to_another()
         {
-            firstManager.AddClient(client);
-
             firstManager.TransferClientTo(client, targetManager);
             
             firstManager.GetClients().Should().BeEmpty();
@@ -38,6 +38,8 @@ namespace Crm
         [Test]
         public void cant_transfer_client_which_doesnt_belong_to_manager()
         {
+            firstManager.RemoveClient(client);
+
             firstManager.Invoking(m => m.TransferClientTo(client, targetManager))
                 .ShouldThrow<TransferClientDeniedException>();
         }

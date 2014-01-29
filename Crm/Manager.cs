@@ -31,7 +31,7 @@ namespace Crm
             return clients;
         }
 
-        private void RemoveClient(Client client)
+        public void RemoveClient(Client client)
         {
             clients.Remove(client);
             client.Manager = null;
@@ -39,12 +39,12 @@ namespace Crm
         
         public void TransferClientTo(Client client, Manager targetManager)
         {
-            if (client.Manager != this)
+            if (this.Position != Position.DepartmentChief && client.Manager != this)
             {
                 throw new TransferClientDeniedException(this, client);
             }
-                
-            this.RemoveClient(client);
+            
+            client.Manager.RemoveClient(client);
             targetManager.AddClient(client);
         }
     }
