@@ -1,4 +1,5 @@
-﻿using System.Management.Instrumentation;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Crm
@@ -6,27 +7,35 @@ namespace Crm
     [TestFixture]
     public class ClientTransferTest
     {
+        private Client client;
+        private Manager firstManager;
+        private Manager targetManager;
+
+        [SetUp]
+        public void SetUp()
+        {
+            client = new Client { Name = "ООО Вектор Плюс" };
+            
+            firstManager = new Manager("Петров");
+            targetManager = new Manager("Сидоров");
+        }
+
         [Test]
         public void should_transfer_client_from_one_manager_to_another()
         {
-            var client = new Client {Name = "ООО Вектор Плюс"};
-            var firstManager = new Manager("Петров");
-            var targetManager = new Manager("Сидоров");
-        }
-    }
-    
-    public class Client
-    {
-        public string Name { get; set; }
-    }
+            firstManager.AddClient(client);
 
-    public class Manager
-    {
-        public Manager(string name)
+            firstManager.TransferClientTo(client, targetManager);
+            
+            firstManager.GetClients().Should().BeEmpty();
+            targetManager.GetClients().ShouldAllBeEquivalentTo(new List<Client> {client});
+        }
+
+        [Test]
+        public void cant_transfer_client_wich_dont_belong_to_manager()
         {
-            Name = name;
+            firstManager.Invoking(m => m.TransferClientTo(client, targetManager))
+                .ShouldThrow<TransferClientDeniedException>();
         }
-
-        public string Name { get; protected set; }
     }
 }
