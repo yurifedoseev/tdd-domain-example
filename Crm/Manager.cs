@@ -39,13 +39,28 @@ namespace Crm
         
         public void TransferClientTo(Client client, Manager targetManager)
         {
-            if (this.Position != Position.DepartmentChief && client.Manager != this)
+            if (!ClientBelongsToThisManager(client) && !IsChiefOfManagerDepartment(client.Manager))
             {
                 throw new TransferClientDeniedException(this, client);
             }
             
             client.Manager.RemoveClient(client);
             targetManager.AddClient(client);
+        }
+
+        private bool ClientBelongsToThisManager(Client client)
+        {
+            return client.Manager == this;
+        }
+
+        private bool IsChiefOfManagerDepartment(Manager manager)
+        {
+            if (manager == null)
+            {
+                return false;
+            }
+            
+            return Position == Position.DepartmentChief && Department == manager.Department;
         }
     }
 }
