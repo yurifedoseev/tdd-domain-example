@@ -6,13 +6,19 @@ namespace Crm
     {
         private readonly IList<Client> clients;
         
-        public Manager(string name)
+        public Manager(string name, Department department, Position position)
         {
             clients = new List<Client>();
             Name = name;
+            Department = department;
+            Position = position;
         }
         
         public string Name { get; private set; }
+
+        public Department Department { get;  private set; }
+
+        public Position Position { get; private set; }
 
         public void AddClient(Client client)
         {

@@ -47,7 +47,9 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="ClientTransferTest.cs" />
+    <Compile Include="Department.cs" />
     <Compile Include="Manager.cs" />
+    <Compile Include="Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransferClientDeniedException.cs" />
   </ItemGroup>

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -10,14 +12,16 @@ namespace Crm
         private Client client;
         private Manager firstManager;
         private Manager targetManager;
+        private Department salesDepartment;
 
         [SetUp]
         public void SetUp()
         {
+            salesDepartment = new Department("Отдел продаж");
             client = new Client { Name = "ООО Вектор Плюс" };
-            
-            firstManager = new Manager("Петров");
-            targetManager = new Manager("Сидоров");
+
+            firstManager = new Manager("Петров", salesDepartment, Position.Manager);
+            targetManager = new Manager("Сидоров", salesDepartment, Position.Manager);
         }
 
         [Test]
@@ -32,10 +36,21 @@ namespace Crm
         }
 
         [Test]
-        public void cant_transfer_client_wich_dont_belong_to_manager()
+        public void cant_transfer_client_which_doesnt_belong_to_manager()
         {
             firstManager.Invoking(m => m.TransferClientTo(client, targetManager))
                 .ShouldThrow<TransferClientDeniedException>();
+        }
+
+        [Test]
+        public void boss_of_manager_can_transfer_his_client()
+        {
+            var chief = new Manager("Иванов", salesDepartment, Position.DepartmentChief);
+
+            chief.TransferClientTo(client, targetManager);
+
+            firstManager.GetClients().Should().BeEmpty();
+            targetManager.GetClients().ShouldAllBeEquivalentTo(new List<Client> { client });
         }
     }
 }
