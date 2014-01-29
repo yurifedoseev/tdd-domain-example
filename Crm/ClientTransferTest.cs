@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -40,11 +38,9 @@ namespace Crm
         [Test]
         public void cant_transfer_client_which_doesnt_belong_to_manager()
         {
-            firstManager.RemoveClient(client);
             var anotherManager = new Manager("Новиков", salesDepartment, Position.Manager);
-            anotherManager.AddClient(client);
             
-            firstManager.Invoking(m => m.TransferClientTo(client, targetManager))
+            anotherManager.Invoking(m => m.TransferClientTo(client, targetManager))
                 .ShouldThrow<TransferClientDeniedException>();
         }
 

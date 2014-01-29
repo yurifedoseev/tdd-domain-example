@@ -31,36 +31,42 @@ namespace Crm
             return clients;
         }
 
-        public void RemoveClient(Client client)
-        {
-            clients.Remove(client);
-            client.Manager = null;
-        }
-        
         public void TransferClientTo(Client client, Manager targetManager)
         {
-            if (!ClientBelongsToThisManager(client) && !IsChiefOfManagerDepartment(client.Manager))
+            if (IsChiefOfClientManagerDepartment(client))
+            {
+                client.Manager.TransferClientTo(client, targetManager);
+                return;
+            }
+
+            if (!BelongsToThisManager(client))
             {
                 throw new TransferClientDeniedException(this, client);
             }
             
-            client.Manager.RemoveClient(client);
+            RemoveClient(client);
             targetManager.AddClient(client);
         }
 
-        private bool ClientBelongsToThisManager(Client client)
+        private void RemoveClient(Client client)
         {
-            return client.Manager == this;
+            clients.Remove(client);
+            client.Manager = null;
         }
 
-        private bool IsChiefOfManagerDepartment(Manager manager)
+        private bool IsChiefOfClientManagerDepartment(Client client)
         {
-            if (manager == null)
+            if (client.Manager == null)
             {
                 return false;
             }
             
-            return Position == Position.DepartmentChief && Department == manager.Department;
+            return Position == Position.DepartmentChief && Department == client.Manager.Department;
+        }
+
+        private bool BelongsToThisManager(Client client)
+        {
+            return client.Manager == this;
         }
     }
 }
