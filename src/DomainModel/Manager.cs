@@ -33,6 +33,9 @@
 
         public void TransferClientTo(Client client, Manager targetManager)
         {
+            if (IsManagerFromSameDepartment(targetManager) ==  false)
+                throw new TransferOutsiteTheDepartmentException(this, targetManager, client);
+
             if (IsChiefOfClientManagerDepartment(client))
             {
                 client.TransferTo(targetManager);
@@ -47,6 +50,11 @@
             targetManager.AddClient(client);
         }
 
+        private bool IsManagerFromSameDepartment(Manager manager)
+        {
+            return Department == manager.Department;
+        }
+
         private void RemoveClient(Client client)
         {
             clients.Remove(client);
@@ -56,9 +64,7 @@
         private bool IsChiefOfClientManagerDepartment(Client client)
         {
             if (client.Manager == null)
-            {
                 return false;
-            }
 
             return Position == Position.DepartmentChief && Department == client.Manager.Department;
         }

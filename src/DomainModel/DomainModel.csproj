@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="TransferOutsiteTheDepartmentException.cs" />
     <Compile Include="Department.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="Position.cs" />

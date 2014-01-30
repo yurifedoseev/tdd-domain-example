@@ -1,6 +1,7 @@
-﻿namespace Crm
+﻿namespace DomainModel.Tests
 {
     using System.Collections.Generic;
+    using Crm;
     using FluentAssertions;
     using NUnit.Framework;
 
@@ -35,17 +36,7 @@
                 .Invoking(m => m.TransferClientTo(client, targetManager))
                 .ShouldThrow<TransferClientDeniedException>();
         }
-
-        [Test]
-        public void chief_of_another_department_cant_transfer_client()
-        {
-            var chief = new Manager("Иванов", supportDepartment, Position.DepartmentChief);
-
-            chief
-                .Invoking(m => m.TransferClientTo(client, targetManager))
-                .ShouldThrow<TransferClientDeniedException>();
-        }
-
+        
         [Test]
         public void chief_of_manager_can_transfer_his_client()
         {
@@ -66,6 +57,28 @@
             targetManager.GetClients().ShouldAllBeEquivalentTo(new List<Client> {client});
         }
 
-        // TODO: Передавать можно внутри группы
+        [Test]
+        public void should_not_transfer_client_to_another_department()
+        {
+            var managerSales = new Manager("Иванов", salesDepartment, Position.Manager);
+            managerSales.AddClient(client);
+            
+            var managerSupport = new Manager("Петров", supportDepartment, Position.Manager);
+
+            managerSales
+                .Invoking(m => m.TransferClientTo(client, managerSupport))
+                .ShouldThrow<TransferOutsiteTheDepartmentException>();
+        }
+
+
+        [Test]
+        public void chief_of_another_department_cant_transfer_client()
+        {
+            var chief = new Manager("Иванов", supportDepartment, Position.DepartmentChief);
+
+            chief
+                .Invoking(m => m.TransferClientTo(client, targetManager))
+                .ShouldThrow<TransferOutsiteTheDepartmentException>();
+        }
     }
 }
