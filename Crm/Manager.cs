@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-
-namespace Crm
+﻿namespace Crm
 {
+    using System.Collections.Generic;
+
     public class Manager
     {
-        private readonly IList<Client> clients;
-        
+        private readonly List<Client> clients;
+
         public Manager(string name, Department department, Position position)
         {
             clients = new List<Client>();
@@ -13,45 +13,44 @@ namespace Crm
             Department = department;
             Position = position;
         }
-        
+
         public string Name { get; private set; }
 
-        public Department Department { get;  private set; }
+        public Department Department { get; private set; }
 
         public Position Position { get; private set; }
 
         public void AddClient(Client client)
         {
-            client.Manager = this;
+            client.SetManager(this);
             clients.Add(client);
         }
 
         public IEnumerable<Client> GetClients()
         {
-            return clients;
+            return clients.AsReadOnly();
         }
 
         public void TransferClientTo(Client client, Manager targetManager)
         {
             if (IsChiefOfClientManagerDepartment(client))
             {
-                client.Manager.TransferClientTo(client, targetManager);
+                client.TransferTo(targetManager);
                 return;
             }
 
-            if (!BelongsToThisManager(client))
-            {
+            if (BelongsToThisManager(client) == false)
                 throw new TransferClientDeniedException(this, client);
-            }
-            
+
             RemoveClient(client);
+
             targetManager.AddClient(client);
         }
 
         private void RemoveClient(Client client)
         {
             clients.Remove(client);
-            client.Manager = null;
+            client.ClearManager();
         }
 
         private bool IsChiefOfClientManagerDepartment(Client client)
@@ -60,7 +59,7 @@ namespace Crm
             {
                 return false;
             }
-            
+
             return Position == Position.DepartmentChief && Department == client.Manager.Department;
         }
 

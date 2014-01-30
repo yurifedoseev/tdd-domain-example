@@ -8,5 +8,7 @@
         }
 
         public string Name { get; private set; }
+
+        // TODO: override equal functions
     }
 }

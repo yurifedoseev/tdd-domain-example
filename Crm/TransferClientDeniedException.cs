@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace Crm
+﻿namespace Crm
 {
+    using System;
+
+    [Serializable]
     public class TransferClientDeniedException : Exception
     {
         public TransferClientDeniedException(Manager manager, Client client)
@@ -16,10 +17,7 @@ namespace Crm
 
         public override string Message
         {
-            get
-            {
-                return string.Format("Попытка передать клиента {0} от менеджера {1}, которому он не принадлежит", Client.Name, Manager.Name);
-            }
+            get { return string.Format("Попытка передать клиента {0} от менеджера {1}, которому он не принадлежит", Client.Name, Manager.Name); }
         }
     }
 }
