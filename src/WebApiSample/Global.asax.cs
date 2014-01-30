@@ -1,23 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Http;
-using System.Web.Mvc;
-using System.Web.Optimization;
-using System.Web.Routing;
-
-namespace WebApiSample
+﻿namespace WebApiSample
 {
-    // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
-    // visit http://go.microsoft.com/?LinkId=9394801
+    using System.Web.Http;
+    using System.Web.Mvc;
+    using System.Web.Optimization;
+    using System.Web.Routing;
+    using App_Start;
+    using MvcExtensions;
+    using MvcExtensions.Windsor;
 
-    public class WebApiApplication : System.Web.HttpApplication
+    public class WebApiApplication : WindsorMvcApplication
     {
-        protected void Application_Start()
+        public WebApiApplication()
         {
-            AreaRegistration.RegisterAllAreas();
+            Bootstrapper.BootstrapperTasks
+                .Include<RegisterModelMetadata>()
+                .Include<RegisterControllers>()
+                .Include<RegisterModelBinders>();
+        }
 
+        protected override void OnStart()
+        {
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
