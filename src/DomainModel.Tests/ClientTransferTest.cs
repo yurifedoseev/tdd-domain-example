@@ -70,7 +70,6 @@
                 .ShouldThrow<TransferOutsiteTheDepartmentException>();
         }
 
-
         [Test]
         public void chief_of_another_department_cant_transfer_client()
         {
@@ -79,6 +78,16 @@
             chief
                 .Invoking(m => m.TransferClientTo(client, targetManager))
                 .ShouldThrow<TransferOutsiteTheDepartmentException>();
+        }
+
+        [Test]
+        public void should_calculate_manager_bonus()
+        {
+            firstManager.ManagerBonus.Count.Should().Be(0);
+
+            firstManager.TransferClientTo(client, targetManager);
+
+            firstManager.ManagerBonus.Count.Should().Be(1);
         }
     }
 }

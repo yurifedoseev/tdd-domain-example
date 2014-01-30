@@ -12,6 +12,7 @@
             Name = name;
             Department = department;
             Position = position;
+            ManagerBonus = new ManagerBonus(this);
         }
 
         public string Name { get; private set; }
@@ -19,6 +20,8 @@
         public Department Department { get; private set; }
 
         public Position Position { get; private set; }
+
+        internal ManagerBonus ManagerBonus { get; set; }
 
         public void AddClient(Client client)
         {
@@ -33,7 +36,7 @@
 
         public void TransferClientTo(Client client, Manager targetManager)
         {
-            if (IsManagerFromSameDepartment(targetManager) ==  false)
+            if (IsManagerFromSameDepartment(targetManager) == false)
                 throw new TransferOutsiteTheDepartmentException(this, targetManager, client);
 
             if (IsChiefOfClientManagerDepartment(client))
@@ -48,6 +51,8 @@
             RemoveClient(client);
 
             targetManager.AddClient(client);
+
+            ManagerBonus.IncreaseForClientTransfer();
         }
 
         private bool IsManagerFromSameDepartment(Manager manager)
