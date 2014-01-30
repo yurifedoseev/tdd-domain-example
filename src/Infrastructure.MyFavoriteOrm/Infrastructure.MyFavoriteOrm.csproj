@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SuperMailService.cs" />
     <Compile Include="TransferClientToManagerCommand.cs" />
   </ItemGroup>
   <ItemGroup>

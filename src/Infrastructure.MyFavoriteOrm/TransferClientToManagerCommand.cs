@@ -6,6 +6,13 @@
 
     public class TransferClientToManagerCommand : ICommand<TransferClientToManager>
     {
+        private readonly IMailService mailService;
+
+        public TransferClientToManagerCommand(IMailService mailService)
+        {
+            this.mailService = mailService;
+        }
+
         public void Execute(TransferClientToManager commandContext)
         {
             // TODO: по данным из контекста берем из БД/сервиса/файловой системы/памяти менеджера, клиента и менеджера, которому переводим клиента
@@ -19,6 +26,8 @@
             // *** выбрали всех из хранилища
 
             currentManager.TransferClientTo(client, targetManager);
+
+            mailService.Send(currentManager);
         }
     }
 }
